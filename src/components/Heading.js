@@ -1,9 +1,12 @@
 import React from 'react';
+import adChainLogo from '../assets/ad_chain.png';
 
-const Heading = () => {
+const Heading = ({ address }) => {
   return (
     <div>
-      AdToken Faucet
+      <img src={adChainLogo} />
+      <div>Your MetaMask address is:</div>
+      <div>{address}</div>
     </div>
   );
 };
