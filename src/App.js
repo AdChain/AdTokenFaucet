@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import Web3 from 'web3';
-import contract from 'truffle-contract'
-import Tx from 'ethereumjs-tx'
+import contract from 'truffle-contract';
+import unit from 'ethjs-unit';
+import 'whatwg-fetch';
 
 import Heading from './components/Heading';
 
-import sale from './config/sale.json'
-import token from './config/token.json'
-
-const tokenAddress = '0x896152feccb4aebf59b38d3d9c2191a94e02d977'
-const saleAddress = '0xf3dc29ef78c83154c29358eb17e40bfac1b3ed22'
+let saleUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/Sale.json';
+let tokenUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/HumanStandardToken.json';
 
 let web3;
 
@@ -20,22 +18,32 @@ if (typeof web3 !== 'undefined') {
   web3 = new Web3(window.web3.currentProvider);
 }
 
-const Sale = contract({
-  abi: sale.abi
-})
-const Token = contract({
-  abi: token.abi
-})
+let getSale = async () => {
+  const saleArtifact = await fetch(saleUrl)
+  const Sale = contract(await saleArtifact.json())
+  Sale.setProvider(web3.currentProvider);
 
-Sale.setProvider(web3.currentProvider)
-Token.setProvider(web3.currentProvider)
+  return Sale.deployed();
+}
+
+let getToken = async () => {
+  const sale = await getSale();
+  const tokenAddress = await sale.token.call();
+  const tokenArtifact = await fetch(tokenUrl);
+  const Token = contract(await tokenArtifact.json());
+  
+  Token.setProvider(web3.currentProvider);
+  
+  return Token.at(tokenAddress);
+}
+
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       account: '',
-      amount: 300000,
+      amount: 1,
       ethBalance: '',
       adtBalance: '',
       txHash: ''
@@ -53,22 +61,21 @@ class App extends Component {
     return accounts[0];
   }
 
-  fetchAdtBalance = () => {
-    Token.at(tokenAddress).then(ins => {
-      return ins.balanceOf.call(this.state.account)
-    }).then(bal => {
-      this.setState({
-        adtBalance: bal.toNumber()
-      })
-    })
+  fetchAdtBalance = async () => {
+    const token = await getToken();
+    const balance = await token.balanceOf.call(this.state.account);
+
+    this.setState({
+      adtBalance: balance.toString(10)
+    });
   }
 
   fetchEthBalance = () => {
     web3.eth.getBalance(this.state.account, (err, res) => {
       this.setState({
         ethBalance: res.toNumber() / Math.pow(10, 18)
-      })
-    })
+      });
+    });
   }
 
   handleChange = (e) => {
@@ -77,19 +84,20 @@ class App extends Component {
     });
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
+    const saleInstance = await getSale();
 
-    Token.at(tokenAddress).then(ins => {
-      console.log('instance:', ins);
+    const weiValue = unit.toWei(this.state.amount, 'ether')
 
-      
-    }).then(result => {
-      console.log('res', result);
-      this.setState({
-        txHash: result
-      });
-    }).catch(error => this.callback(error, 'no result'))
+    const txHash = await saleInstance.purchaseTokens({
+      from: this.state.account,
+      value: weiValue
+    });
+
+    this.setState({
+      txHash: txHash.tx
+    });
   }
 
   callback = (err, result) => {
@@ -99,7 +107,7 @@ class App extends Component {
       console.log('result:', result);
       this.setState({
         txHash: result
-      })
+      });
     }
   }
 
@@ -109,7 +117,8 @@ class App extends Component {
         <div>Your transaction:</div>
         <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${this.state.txHash}`}>{this.state.txHash}</a>
       </div>
-    )
+    );
+
     return (
       <div className="App">
         <Heading address={this.state.account} />
@@ -127,7 +136,7 @@ class App extends Component {
         <br />
 
         <form onSubmit={this.handleSubmit}>
-          <div>Enter ADT Amount you'd like to purchase (default 300,000):</div>
+          <div>Enter ETH Amount you'd like to send (default 1):</div>
 
           <input value={this.state.amount} onChange={this.handleChange} />
 
