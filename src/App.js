@@ -40,7 +40,6 @@ let getToken = async () => {
 }
 
 
-
 class App extends Component {
   constructor() {
     super();
