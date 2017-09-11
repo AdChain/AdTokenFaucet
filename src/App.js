@@ -8,38 +8,6 @@ import 'whatwg-fetch';
 
 import Heading from './components/Heading';
 
-let saleUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/Sale.json';
-let tokenUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/HumanStandardToken.json';
-
-let web3;
-
-if (typeof web3 !== 'undefined') {
-  web3 = new Web3(web3.currentProvider);
-} else {
-  web3 = new Web3(window.web3.currentProvider);
-}
-
-let getSale = async () => {
-  const saleArtifact = await fetch(saleUrl);
-  const Sale = contract(await saleArtifact.json());
-
-  Sale.setProvider(web3.currentProvider);
-
-  return Sale.deployed();
-}
-
-let getToken = async () => {
-  const sale = await getSale();
-  const tokenAddress = await sale.token.call();
-  const tokenArtifact = await fetch(tokenUrl);
-  const Token = contract(await tokenArtifact.json());
-
-  Token.setProvider(web3.currentProvider);
-
-  return Token.at(tokenAddress);
-}
-
-
 class App extends Component {
   constructor() {
     super();
@@ -50,20 +18,50 @@ class App extends Component {
       adtBalance: '-',
       txHash: ''
     }
+    this.web3;
   }
   
   componentDidMount() {
-    this.setupBalances()
+    if (typeof this.web3 !== 'undefined') {
+      this.web3 = new Web3(this.web3.currentProvider);
+    } else {
+      this.web3 = new Web3(window.web3.currentProvider);
+    }
+
+    this.web3.eth.defaultAccount = this.web3.eth.accounts[0];
+    this.setupBalances();
+  }
+
+  getSale = async () => {
+    let saleUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/Sale.json';
+    const saleArtifact = await fetch(saleUrl);
+    const Sale = contract(await saleArtifact.json());
+
+    Sale.setProvider(this.web3.currentProvider);
+
+    return Sale.deployed();
+  }
+
+  getToken = async () => {
+    const sale = await this.getSale();
+    let tokenUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/HumanStandardToken.json';
+    const tokenAddress = await sale.token.call();
+    const tokenArtifact = await fetch(tokenUrl);
+    const Token = contract(await tokenArtifact.json());
+
+    Token.setProvider(this.web3.currentProvider);
+
+    return Token.at(tokenAddress);
   }
   
   setupBalances = async () => {
-    const account = web3.eth.accounts[0];
-    const token = await getToken();
+    const token = await this.getToken();
+    const account = this.web3.eth.accounts[0];
     const rawBal = await token.balanceOf.call(account);
-
+    
     const adtDisplayValue = rawBal.div(new BN('10', 10).pow(new BN('9', 10)));
 
-    web3.eth.getBalance(account, (err, res) => {
+    this.web3.eth.getBalance(account, (err, res) => {
       const ethDisplayValue = res.div(new BN('10', 10).pow(new BN('18', 10)))
       this.setState({
         account: account,
@@ -81,7 +79,7 @@ class App extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const saleInstance = await getSale();
+    const saleInstance = await this.getSale();
 
     const weiValue = unit.toWei(this.state.amount, 'ether');
 

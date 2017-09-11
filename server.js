@@ -15,7 +15,7 @@ app.use(express.static(__dirname + "/public"));
 /* config for browser history in react */
 app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "index.html")));
 
-const server = app.listen(process.env.PORT || 8080, () => {
+const server = app.listen(process.env.PORT || 3000, () => {
   const port = server.address().port;
   console.log("app listening on port: ", port);
 });
