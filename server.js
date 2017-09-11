@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 /* static route */
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/build"));
 
 /* config for browser history in react */
 app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, "index.html")));
