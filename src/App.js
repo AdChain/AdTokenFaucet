@@ -19,8 +19,9 @@ if (typeof web3 !== 'undefined') {
 }
 
 let getSale = async () => {
-  const saleArtifact = await fetch(saleUrl)
-  const Sale = contract(await saleArtifact.json())
+  const saleArtifact = await fetch(saleUrl);
+  const Sale = contract(await saleArtifact.json());
+
   Sale.setProvider(web3.currentProvider);
 
   return Sale.deployed();
@@ -53,7 +54,7 @@ class App extends Component {
   componentDidMount() {
     this.setState({
       account: this.fetchAccounts()
-    })
+    });
   }
 
   fetchAccounts = () => {
@@ -88,7 +89,7 @@ class App extends Component {
     e.preventDefault();
     const saleInstance = await getSale();
 
-    const weiValue = unit.toWei(this.state.amount, 'ether')
+    const weiValue = unit.toWei(this.state.amount, 'ether');
 
     const txHash = await saleInstance.purchaseTokens({
       from: this.state.account,
