@@ -4,6 +4,14 @@ Install local packages
 
 `npm install`
 
-Start app on localhost:3000
+Start local server on localhost:3000
 
-`npm start`
+`npm run dev`
+
+Build static files in `/build`
+
+`npm run build`
+
+Deploy to firebase
+
+`firebase deploy`
