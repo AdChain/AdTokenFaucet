@@ -3,6 +3,7 @@ import './App.css';
 import Web3 from 'web3';
 import contract from 'truffle-contract';
 import unit from 'ethjs-unit';
+import BN from 'bn.js';
 import 'whatwg-fetch';
 
 import Heading from './components/Heading';
@@ -32,11 +33,12 @@ let getToken = async () => {
   const tokenAddress = await sale.token.call();
   const tokenArtifact = await fetch(tokenUrl);
   const Token = contract(await tokenArtifact.json());
-  
+
   Token.setProvider(web3.currentProvider);
-  
+
   return Token.at(tokenAddress);
 }
+
 
 
 class App extends Component {
@@ -45,32 +47,40 @@ class App extends Component {
     this.state = {
       account: '',
       amount: 1,
-      ethBalance: '',
-      adtBalance: '',
+      ethBalance: '-',
+      adtBalance: '-',
       txHash: ''
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.setState({
       account: this.fetchAccounts()
     });
   }
-
+  
+  componentDidMount() {
+    // this.fetchAdtBalance()
+    this.fetchEthBalance()
+  }
+  
   fetchAccounts = () => {
     const accounts = web3.eth.accounts;
     return accounts[0];
   }
-
+  
   fetchAdtBalance = async () => {
+    
     const token = await getToken();
-    const balance = await token.balanceOf.call(this.state.account);
+    const rawBal = (await token.balanceOf.call(this.state.account));
+
+    const displayValue = rawBal.div(new BN('10', 10).pow(new BN('9', 10)));
 
     this.setState({
-      adtBalance: balance.toString(10)
+      adtBalance: displayValue.toString()
     });
   }
-
+  
   fetchEthBalance = () => {
     web3.eth.getBalance(this.state.account, (err, res) => {
       this.setState({
@@ -109,21 +119,38 @@ class App extends Component {
       </div>
     );
 
+    const styles = {
+      balances: {
+        padding: '1em',
+        display: 'flex',
+        justifyContent: 'center'
+      },
+      adt: {
+        border: '1px solid blue',
+        margin: '1em'
+      },
+      eth: {
+        border: '1px solid grey',
+        margin: '1em'
+      }
+    }
+
     return (
       <div className="App">
         <Heading address={this.state.account} />
 
         <br />
 
-        <div onClick={this.fetchAdtBalance}>Click to see ADT Balance:</div>
-        <div>{this.state.adtBalance}</div>
-
-        <br />
-
-        <div onClick={this.fetchEthBalance}>Click to see ETH Balance:</div>
-        <div>{this.state.ethBalance}</div>
-
-        <br />
+        <div style={styles.balances}>
+          <div style={styles.adt} onClick={this.fetchAdtBalance}>
+            <div>Click to see ADT Balance:</div>
+            <div>{this.state.adtBalance}</div>
+          </div>
+          <div style={styles.eth}>
+            <div>ETH Balance:</div>
+            <div>{this.state.ethBalance}</div>
+          </div>
+        </div>
 
         <form onSubmit={this.handleSubmit}>
           <div>Enter ETH Amount you'd like to send (default 1):</div>

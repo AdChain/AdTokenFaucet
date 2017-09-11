@@ -1,10 +1,14 @@
 import React from 'react';
-import adChainLogo from '../assets/ad_chain.png';
+import cat from '../assets/cat.png';
+
+const imgStyle = {
+  maxWidth: '500px',
+}
 
 const Heading = ({ address }) => {
   return (
     <div>
-      <img src={adChainLogo} alt='adChain logo' />
+      <img src={cat} alt='adChain logo' style={imgStyle} />
       <div>Your MetaMask address is:</div>
       <div>{address}</div>
     </div>
