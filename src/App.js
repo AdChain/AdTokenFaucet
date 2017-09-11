@@ -101,17 +101,6 @@ class App extends Component {
     });
   }
 
-  callback = (err, result) => {
-    if (err) {
-      console.log('error:', err);
-    } else {
-      console.log('result:', result);
-      this.setState({
-        txHash: result
-      });
-    }
-  }
-
   render() {
     const tx = (
       <div>
