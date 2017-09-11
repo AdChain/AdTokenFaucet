@@ -12,6 +12,6 @@ Build static files in `/build`
 
 `npm run build`
 
-Deploy to firebase
+Serve static files on localhost:3000
 
-`firebase deploy`
+`npm start`
