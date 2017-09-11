@@ -51,39 +51,24 @@ class App extends Component {
       txHash: ''
     }
   }
-
-  componentWillMount() {
-    this.setState({
-      account: this.fetchAccounts()
-    });
-  }
   
   componentDidMount() {
-    // this.fetchAdtBalance()
-    this.fetchEthBalance()
+    this.setupBalances()
   }
   
-  fetchAccounts = () => {
-    const accounts = web3.eth.accounts;
-    return accounts[0];
-  }
-  
-  fetchAdtBalance = async () => {
-    
+  setupBalances = async () => {
+    const account = web3.eth.accounts[0];
     const token = await getToken();
-    const rawBal = (await token.balanceOf.call(this.state.account));
+    const rawBal = await token.balanceOf.call(account);
 
-    const displayValue = rawBal.div(new BN('10', 10).pow(new BN('9', 10)));
+    const adtDisplayValue = rawBal.div(new BN('10', 10).pow(new BN('9', 10)));
 
-    this.setState({
-      adtBalance: displayValue.toString()
-    });
-  }
-  
-  fetchEthBalance = () => {
-    web3.eth.getBalance(this.state.account, (err, res) => {
+    web3.eth.getBalance(account, (err, res) => {
+      const ethDisplayValue = res.div(new BN('10', 10).pow(new BN('18', 10)))
       this.setState({
-        ethBalance: res.toNumber() / Math.pow(10, 18)
+        account: account,
+        adtBalance: adtDisplayValue.toString(10),
+        ethBalance: ethDisplayValue.toString(10)
       });
     });
   }
