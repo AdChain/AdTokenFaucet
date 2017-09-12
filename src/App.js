@@ -18,15 +18,20 @@ class App extends Component {
       adtBalance: '-',
       txHash: ''
     }
-    this.web3;
   }
   
-  componentDidMount() {
+  getWeb3 = () => {
     if (typeof this.web3 !== 'undefined') {
-      this.web3 = new Web3(this.web3.currentProvider);
+      return new Web3(this.web3.currentProvider);
+    } else if (typeof window.web3 !== 'undefined') {
+      return new Web3(window.web3.currentProvider);
     } else {
-      this.web3 = new Web3(window.web3.currentProvider);
+      return this.getWeb3();
     }
+  }
+ 
+  componentDidMount() {
+    this.web3 = this.getWeb3();
 
     this.web3.eth.defaultAccount = this.web3.eth.accounts[0];
     this.setupBalances();
