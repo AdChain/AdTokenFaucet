@@ -20,21 +20,19 @@ class App extends Component {
     }
   }
   
-  getWeb3 = () => {
-    if (typeof this.web3 !== 'undefined') {
-      return new Web3(this.web3.currentProvider);
-    } else if (typeof window.web3 !== 'undefined') {
-      return new Web3(window.web3.currentProvider);
-    } else {
-      return this.getWeb3();
-    }
-  }
- 
   componentDidMount() {
-    this.web3 = this.getWeb3();
+    window.setTimeout(() => {
+      if (typeof this.web3 !== 'undefined') {
+        this.web3 = new Web3(this.web3.currentProvider);
+      } else if (typeof window.web3 !== 'undefined') {
+        this.web3 = new Web3(window.web3.currentProvider);
+      } else {
+        throw new Error('You need MetaMask!');
+      }
 
-    this.web3.eth.defaultAccount = this.web3.eth.accounts[0];
-    this.setupBalances();
+      this.web3.eth.defaultAccount = this.web3.eth.accounts[0];
+      this.setupBalances();
+    }, 1000);
   }
 
   getSale = async () => {
