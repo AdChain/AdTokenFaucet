@@ -16,7 +16,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "npm run build && node server.js",
     "dev": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
