@@ -128,21 +128,21 @@ class App extends Component {
 
         <div style={styles.balances}>
           <div style={styles.adt} onClick={this.fetchAdtBalance}>
-            <div>Click to see ADT Balance:</div>
+            <div>Your Rinkeby ADT balance:</div>
             <div>{this.state.adtBalance}</div>
           </div>
           <div style={styles.eth}>
-            <div>ETH Balance:</div>
+            <div>Your Rinkeby ETH balance:</div>
             <div>{this.state.ethBalance}</div>
           </div>
         </div>
 
         <form onSubmit={this.handleSubmit}>
-          <div>Enter ETH Amount you'd like to send (default 1):</div>
+          <div>Enter the amount of Rinkeby ETH you'd like to send:</div>
 
           <input value={this.state.amount} onChange={this.handleChange} />
 
-          <button>Buy ADT</button>
+          <button>Buy Rinkeby ADT with Rinkeby ETH</button>
         </form>
 
         <br />

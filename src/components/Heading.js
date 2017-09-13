@@ -9,7 +9,7 @@ const Heading = ({ address }) => {
   return (
     <div>
       <img src={cat} alt='adChain logo' style={imgStyle} />
-      <div>Your MetaMask address is:</div>
+      <div>Your address:</div>
       <div>{address}</div>
     </div>
   );
