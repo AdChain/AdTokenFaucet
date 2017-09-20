@@ -7,6 +7,7 @@ import BN from 'bn.js';
 import 'whatwg-fetch';
 
 import Heading from './components/Heading';
+import AdTokenPrice from './components/AdTokenPrice';
 
 class App extends Component {
   constructor() {
@@ -18,7 +19,8 @@ class App extends Component {
       adtBalance: '-',
       txHash: '',
       rinkeby: true,
-      needMeta: false
+      needMeta: false,
+      landingPageMessage: ''
     };
   }
 
@@ -44,9 +46,15 @@ class App extends Component {
   }
 
   getSale = async () => {
-    let saleUrl =
-      'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/Sale.json';
-    const saleArtifact = await fetch(saleUrl);
+    let saleUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/Sale.json';
+    let saleArtifact;
+
+    try {
+      saleArtifact = await fetch(saleUrl);
+    } catch (err) {
+      return false;
+    }
+
     const Sale = contract(await saleArtifact.json());
 
     Sale.setProvider(this.web3.currentProvider);
@@ -58,11 +66,17 @@ class App extends Component {
         rinkeby: false
       });
     }
+
     return Sale.deployed();
   };
 
   getToken = async () => {
     const sale = await this.getSale();
+
+    if (!sale) {
+      return false;
+    }
+
     let tokenUrl =
       'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/HumanStandardToken.json';
     const tokenAddress = await sale.token.call();
@@ -76,6 +90,17 @@ class App extends Component {
 
   setupBalances = async () => {
     const token = await this.getToken();
+    const adBlocker = (
+      <div>
+        {'Hmm...something went wrong. If you are running an ad blocker, please disable it to continue'}
+      </div>
+    );
+    if (!token) {
+      this.setState({
+        landingPageMessage: adBlocker
+      });
+      return false;
+    }
     const account = this.web3.eth.accounts[0];
     const rawBal = await token.balanceOf.call(account);
 
@@ -119,6 +144,7 @@ class App extends Component {
       <div>
         <div>Your transaction:</div>
         <a
+          rel='noopener noreferrer'
           target="_blank"
           href={`https://rinkeby.etherscan.io/tx/${this.state.txHash}`}
         >
@@ -145,10 +171,9 @@ class App extends Component {
 
     const noEth = (
       <div>
-        Uh oh! Looks like your Rinkeby ETH account is empty. If you'd like some
-        free Rinkeby test ETH, visit the{' '}
-        <a href="https://faucet.rinkeby.io" target="_blank">
-          Rinkeby ETH Faucet
+        {"Uh oh! Looks like your Rinkeby ETH account is empty. If you'd like some free Rinkeby test ETH, visit the "}
+        <a href="https://faucet.rinkeby.io" rel='noopener noreferrer' target="_blank">
+          {"Rinkeby ETH Faucet"}
         </a>
       </div>
     );
@@ -159,6 +184,7 @@ class App extends Component {
           address={this.state.account}
           needMeta={this.state.needMeta}
           rinkeby={this.state.rinkeby}
+          landingPageMessage={this.state.landingPageMessage}
         />
 
         <br />
@@ -168,23 +194,25 @@ class App extends Component {
         <div>
           <div style={styles.balances}>
             <div style={styles.adt} onClick={this.fetchAdtBalance}>
-              <div>Your Rinkeby ADT balance:</div>
+              <div>{'Your Rinkeby ADT balance:'}</div>
               <div>{this.state.adtBalance}</div>
             </div>
             <div style={styles.eth}>
-              <div>Your Rinkeby ETH balance:</div>
+              <div>{'Your Rinkeby ETH balance:'}</div>
               <div>{this.state.ethBalance}</div>
             </div>
           </div>
         </div>
 
+        <AdTokenPrice />
+
         {this.state.account && (
           <form onSubmit={this.handleSubmit}>
-            <div>Enter the amount of Rinkeby ETH you'd like to send:</div>
+            <div>{"Enter the amount of Rinkeby ETH you'd like to send:"}</div>
 
             <input value={this.state.amount} onChange={this.handleChange} />
 
-            <button>Buy Rinkeby ADT with Rinkeby ETH</button>
+            <button>{'Buy Rinkeby ADT with Rinkeby ETH'}</button>
           </form>
         )}
 
