@@ -8,7 +8,7 @@ const AdTokenPrice = () => {
   return (
     <div style={style}>
       <div>
-        {'1 ADT costs 57140 GWEI'}
+        {'1 ADT costs 57,140 GWEI'}
       </div>
       <div>
         {'1 ETH will get you ~17,500 ADT'}
