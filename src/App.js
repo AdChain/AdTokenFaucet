@@ -16,10 +16,12 @@ class App extends Component {
       amount: 1,
       ethBalance: '-',
       adtBalance: '-',
-      txHash: ''
-    }
+      txHash: '',
+      rinkeby: true,
+      needMeta: false
+    };
   }
-  
+
   componentDidMount() {
     window.setTimeout(() => {
       if (typeof this.web3 !== 'undefined') {
@@ -31,23 +33,38 @@ class App extends Component {
       }
 
       this.web3.eth.defaultAccount = this.web3.eth.accounts[0];
-      this.setupBalances();
+      if (this.web3.eth.defaultAccount) {
+        this.setupBalances();
+      } else if (this.web3.eth.defaultAccount === undefined) {
+        this.setState({
+          needMeta: true
+        });
+      }
     }, 1000);
   }
 
   getSale = async () => {
-    let saleUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/Sale.json';
+    let saleUrl =
+      'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/Sale.json';
     const saleArtifact = await fetch(saleUrl);
     const Sale = contract(await saleArtifact.json());
 
     Sale.setProvider(this.web3.currentProvider);
 
+    try {
+      await Sale.deployed();
+    } catch (err) {
+      this.setState({
+        rinkeby: false
+      });
+    }
     return Sale.deployed();
-  }
+  };
 
   getToken = async () => {
     const sale = await this.getSale();
-    let tokenUrl = 'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/HumanStandardToken.json';
+    let tokenUrl =
+      'https://s3-us-west-2.amazonaws.com/adchain-registry-contracts/HumanStandardToken.json';
     const tokenAddress = await sale.token.call();
     const tokenArtifact = await fetch(tokenUrl);
     const Token = contract(await tokenArtifact.json());
@@ -55,32 +72,33 @@ class App extends Component {
     Token.setProvider(this.web3.currentProvider);
 
     return Token.at(tokenAddress);
-  }
-  
+  };
+
   setupBalances = async () => {
     const token = await this.getToken();
     const account = this.web3.eth.accounts[0];
     const rawBal = await token.balanceOf.call(account);
-    
+
     const adtDisplayValue = rawBal.div(new BN('10', 10).pow(new BN('9', 10)));
 
     this.web3.eth.getBalance(account, (err, res) => {
-      const ethDisplayValue = res.div(new BN('10', 10).pow(new BN('18', 10)))
+      const ethDisplayValue = res.div(new BN('10', 10).pow(new BN('18', 10)));
       this.setState({
+        rinkeby: true,
         account: account,
         adtBalance: adtDisplayValue.toString(10),
         ethBalance: ethDisplayValue.toString(10)
       });
     });
-  }
+  };
 
-  handleChange = (e) => {
+  handleChange = e => {
     this.setState({
       amount: e.target.value
     });
-  }
+  };
 
-  handleSubmit = async (e) => {
+  handleSubmit = async e => {
     e.preventDefault();
     const saleInstance = await this.getSale();
 
@@ -94,13 +112,18 @@ class App extends Component {
     this.setState({
       txHash: txHash.tx
     });
-  }
+  };
 
   render() {
     const tx = (
       <div>
         <div>Your transaction:</div>
-        <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${this.state.txHash}`}>{this.state.txHash}</a>
+        <a
+          target="_blank"
+          href={`https://rinkeby.etherscan.io/tx/${this.state.txHash}`}
+        >
+          {this.state.txHash}
+        </a>
       </div>
     );
 
@@ -118,37 +141,56 @@ class App extends Component {
         border: '1px solid grey',
         margin: '1em'
       }
-    }
+    };
+
+    const noEth = (
+      <div>
+        Uh oh! Looks like your Rinkeby ETH account is empty. If you'd like some
+        free Rinkeby test ETH, visit the{' '}
+        <a href="https://faucet.rinkeby.io" target="_blank">
+          Rinkeby ETH Faucet
+        </a>
+      </div>
+    );
 
     return (
       <div className="App">
-        <Heading address={this.state.account} />
+        <Heading
+          address={this.state.account}
+          needMeta={this.state.needMeta}
+          rinkeby={this.state.rinkeby}
+        />
 
         <br />
 
-        <div style={styles.balances}>
-          <div style={styles.adt} onClick={this.fetchAdtBalance}>
-            <div>Your Rinkeby ADT balance:</div>
-            <div>{this.state.adtBalance}</div>
-          </div>
-          <div style={styles.eth}>
-            <div>Your Rinkeby ETH balance:</div>
-            <div>{this.state.ethBalance}</div>
+        {this.state.ethBalance === '0' && noEth}
+
+        <div>
+          <div style={styles.balances}>
+            <div style={styles.adt} onClick={this.fetchAdtBalance}>
+              <div>Your Rinkeby ADT balance:</div>
+              <div>{this.state.adtBalance}</div>
+            </div>
+            <div style={styles.eth}>
+              <div>Your Rinkeby ETH balance:</div>
+              <div>{this.state.ethBalance}</div>
+            </div>
           </div>
         </div>
 
-        <form onSubmit={this.handleSubmit}>
-          <div>Enter the amount of Rinkeby ETH you'd like to send:</div>
+        {this.state.account && (
+          <form onSubmit={this.handleSubmit}>
+            <div>Enter the amount of Rinkeby ETH you'd like to send:</div>
 
-          <input value={this.state.amount} onChange={this.handleChange} />
+            <input value={this.state.amount} onChange={this.handleChange} />
 
-          <button>Buy Rinkeby ADT with Rinkeby ETH</button>
-        </form>
+            <button>Buy Rinkeby ADT with Rinkeby ETH</button>
+          </form>
+        )}
 
         <br />
 
         {this.state.txHash && tx}
-
       </div>
     );
   }
