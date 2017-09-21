@@ -6,7 +6,9 @@ const styles = {
     maxWidth: '400px'
   },
   container: {
-    margin: '2em'
+    margin: '2em',
+    color: '#4585c7',
+    fontSize: '1.3em'
   }
 };
 

@@ -1,6 +1,13 @@
 import React from 'react';
 import AdTokenPrice from './AdTokenPrice';
 
+const styles = {
+  button: {
+    border: '1px solid #4585c7',
+    marginLeft: '1em'
+  }
+}
+
 const PurchaseAdt = ({ handleSubmit, handleChange, amount }) => {
   return (
     <div>
@@ -10,7 +17,7 @@ const PurchaseAdt = ({ handleSubmit, handleChange, amount }) => {
 
         <input value={amount} onChange={handleChange} />
 
-        <button>{'Buy Rinkeby ADT with Rinkeby ETH'}</button>
+        <button style={styles.button}>{'Buy Rinkeby ADT with Rinkeby ETH'}</button>
       </form>
     </div>
   );
