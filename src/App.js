@@ -9,13 +9,13 @@ import 'whatwg-fetch';
 import Heading from './components/Heading';
 import Dialog from './components/Dialog';
 import NoEther from './components/NoEther';
-import AdTokenPrice from './components/AdTokenPrice';
+import Balances from './components/Balances';
+import PurchaseAdt from './components/PurchaseAdt';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      account: '',
       amount: 1,
       ethBalance: '-',
       adtBalance: '-',
@@ -128,7 +128,7 @@ class App extends Component {
     const weiValue = unit.toWei(this.state.amount, 'ether');
 
     const txHash = await saleInstance.purchaseTokens({
-      from: this.state.account,
+      from: this.state.subMessage,
       value: weiValue
     });
 
@@ -151,26 +151,6 @@ class App extends Component {
       </div>
     );
 
-    const styles = {
-      balances: {
-        padding: '1em',
-        display: 'flex',
-        justifyContent: 'center'
-      },
-      adt: {
-        border: '2px solid #4585c7',
-        margin: '1em',
-        marginTop: 0,
-        padding: '.3em'
-      },
-      eth: {
-        border: '2px solid #3C3C3D',
-        margin: '1em',
-        marginTop: 0,
-        padding: '.3em'
-      }
-    };
-
     return (
       <div className="App">
         <Heading />
@@ -180,34 +160,22 @@ class App extends Component {
           subMessage={this.state.subMessage}
         />
 
+        {this.state.subMessage && (
+          <Balances 
+            adtBalance={this.state.adtBalance}
+            ethBalance={this.state.ethBalance}
+          />
+        )}
+        
         {this.state.ethBalance === '0' && <NoEther />}
 
-        <div>
-          <div style={styles.balances}>
-            <div style={styles.adt} onClick={this.fetchAdtBalance}>
-              <div>{'Your Rinkeby ADT balance:'}</div>
-              <div>{this.state.adtBalance}</div>
-            </div>
-            <div style={styles.eth}>
-              <div>{'Your Rinkeby ETH balance:'}</div>
-              <div>{this.state.ethBalance}</div>
-            </div>
-          </div>
-        </div>
-
-        <AdTokenPrice />
-
-        {this.state.account && (
-          <form onSubmit={this.handleSubmit}>
-            <div>{"Enter the amount of Rinkeby ETH you'd like to send:"}</div>
-
-            <input value={this.state.amount} onChange={this.handleChange} />
-
-            <button>{'Buy Rinkeby ADT with Rinkeby ETH'}</button>
-          </form>
+        {this.state.subMessage && (
+          <PurchaseAdt 
+            handleChange={this.handleChange} 
+            handleSubmit={this.handleSubmit} 
+            amount={this.state.amount} 
+          />
         )}
-
-        <br />
 
         {this.state.txHash && tx}
       </div>

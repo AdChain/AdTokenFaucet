@@ -1,8 +1,12 @@
 import React from 'react';
 
+const noEtherStyle = {
+  marginBottom: '2em'
+}
+
 const NoEther = () => {
   return (
-    <div>
+    <div style={noEtherStyle}>
       {"Uh oh! Looks like your Rinkeby ETH account is empty. If you'd like some free Rinkeby test ETH, visit the "}
       <a
         href="https://faucet.rinkeby.io"
