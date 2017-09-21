@@ -89,6 +89,8 @@ class App extends Component {
     return Token.at(tokenAddress);
   };
 
+  trimDecimals = (n) => (+n).toFixed(3).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1');
+
   setupBalances = async () => {
     const token = await this.getToken();
 
@@ -104,13 +106,17 @@ class App extends Component {
 
     const adtDisplayValue = rawBal.div(new BN('10', 10).pow(new BN('9', 10)));
 
+    const adtBalance = this.trimDecimals(adtDisplayValue);
+
     this.web3.eth.getBalance(account, (err, res) => {
       const ethDisplayValue = res.div(new BN('10', 10).pow(new BN('18', 10)));
+      const ethBalance = this.trimDecimals(ethDisplayValue);
+
       this.setState({
         message: 'Your Rinkeby MetaMask address:',
         subMessage: account,
-        adtBalance: adtDisplayValue.toString(10),
-        ethBalance: ethDisplayValue.toString(10)
+        adtBalance: adtBalance.toString(10),
+        ethBalance: ethBalance.toString(10)
       });
     });
   };
