@@ -7,6 +7,8 @@ import BN from 'bn.js';
 import 'whatwg-fetch';
 
 import Heading from './components/Heading';
+import Dialog from './components/Dialog';
+import NoEther from './components/NoEther';
 import AdTokenPrice from './components/AdTokenPrice';
 
 class App extends Component {
@@ -18,9 +20,8 @@ class App extends Component {
       ethBalance: '-',
       adtBalance: '-',
       txHash: '',
-      rinkeby: true,
-      needMeta: false,
-      landingPageMessage: ''
+      message: 'Please unlock MetaMask and connect to the Rinkeby Test Network',
+      subMessage: ''
     };
   }
 
@@ -39,7 +40,7 @@ class App extends Component {
         this.setupBalances();
       } else if (this.web3.eth.defaultAccount === undefined) {
         this.setState({
-          needMeta: true
+          message: 'Please unlock MetaMask and connect to the Rinkeby Test Network'
         });
       }
     }, 1000);
@@ -63,7 +64,7 @@ class App extends Component {
       await Sale.deployed();
     } catch (err) {
       this.setState({
-        rinkeby: false
+        message: 'Please unlock MetaMask and connect to the Rinkeby Test Network'
       });
     }
 
@@ -90,17 +91,14 @@ class App extends Component {
 
   setupBalances = async () => {
     const token = await this.getToken();
-    const adBlocker = (
-      <div>
-        {'Hmm...something went wrong. If you are running an ad blocker, please disable it to continue'}
-      </div>
-    );
+
     if (!token) {
       this.setState({
-        landingPageMessage: adBlocker
+        message: 'Hmm...something went wrong. If you are running an ad blocker, please disable it to continue'
       });
       return false;
     }
+
     const account = this.web3.eth.accounts[0];
     const rawBal = await token.balanceOf.call(account);
 
@@ -109,8 +107,8 @@ class App extends Component {
     this.web3.eth.getBalance(account, (err, res) => {
       const ethDisplayValue = res.div(new BN('10', 10).pow(new BN('18', 10)));
       this.setState({
-        rinkeby: true,
-        account: account,
+        message: 'Your Rinkeby MetaMask address:',
+        subMessage: account,
         adtBalance: adtDisplayValue.toString(10),
         ethBalance: ethDisplayValue.toString(10)
       });
@@ -160,36 +158,29 @@ class App extends Component {
         justifyContent: 'center'
       },
       adt: {
-        border: '1px solid blue',
-        margin: '1em'
+        border: '2px solid #4585c7',
+        margin: '1em',
+        marginTop: 0,
+        padding: '.3em'
       },
       eth: {
-        border: '1px solid grey',
-        margin: '1em'
+        border: '2px solid #3C3C3D',
+        margin: '1em',
+        marginTop: 0,
+        padding: '.3em'
       }
     };
 
-    const noEth = (
-      <div>
-        {"Uh oh! Looks like your Rinkeby ETH account is empty. If you'd like some free Rinkeby test ETH, visit the "}
-        <a href="https://faucet.rinkeby.io" rel='noopener noreferrer' target="_blank">
-          {"Rinkeby ETH Faucet"}
-        </a>
-      </div>
-    );
-
     return (
       <div className="App">
-        <Heading
-          address={this.state.account}
-          needMeta={this.state.needMeta}
-          rinkeby={this.state.rinkeby}
-          landingPageMessage={this.state.landingPageMessage}
+        <Heading />
+
+        <Dialog
+          message={this.state.message}
+          subMessage={this.state.subMessage}
         />
 
-        <br />
-
-        {this.state.ethBalance === '0' && noEth}
+        {this.state.ethBalance === '0' && <NoEther />}
 
         <div>
           <div style={styles.balances}>
