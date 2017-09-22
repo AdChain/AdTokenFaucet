@@ -11,6 +11,7 @@ import Dialog from './components/Dialog';
 import NoEther from './components/NoEther';
 import Balances from './components/Balances';
 import PurchaseAdt from './components/PurchaseAdt';
+import TxHash from './components/TxHash';
 
 class App extends Component {
   constructor() {
@@ -131,32 +132,23 @@ class App extends Component {
     e.preventDefault();
     const saleInstance = await this.getSale();
 
+    console.log('saleInstance', saleInstance);
+
     const weiValue = unit.toWei(this.state.amount, 'ether');
 
-    const txHash = await saleInstance.purchaseTokens({
+    const txn = {
       from: this.state.subMessage,
       value: weiValue
-    });
+    }
 
+    const txHash = await saleInstance.purchaseTokens.sendTransaction(txn);
+    
     this.setState({
-      txHash: txHash.tx
-    });
+      txHash: txHash
+    })
   };
 
   render() {
-    const tx = (
-      <div>
-        <div>Your transaction:</div>
-        <a
-          rel='noopener noreferrer'
-          target="_blank"
-          href={`https://rinkeby.etherscan.io/tx/${this.state.txHash}`}
-        >
-          {this.state.txHash}
-        </a>
-      </div>
-    );
-
     return (
       <div className="App">
         <Heading />
@@ -183,7 +175,7 @@ class App extends Component {
           />
         )}
 
-        {this.state.txHash && tx}
+        {this.state.txHash && <TxHash txHash={this.state.txHash} />}
       </div>
     );
   }
