@@ -24,6 +24,12 @@ Start prod server on localhost:3000
 npm start
 ```
 
+# Build
+
+```bash
+npm run build
+```
+
 # License
 
 MIT
