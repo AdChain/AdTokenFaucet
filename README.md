@@ -2,6 +2,8 @@
 
 > The adToken Rinkeby faucet
 
+**[https://faucet.adtoken.com](https://faucet.adtoken.com)**
+
 # Development
 
 Install local packages
