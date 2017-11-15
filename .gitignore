@@ -24,7 +24,10 @@ secrets.json*
 
 *.swp
 
+.ebextensions
+
 # Elastic Beanstalk Files
+# IMPORTANT TO IGNORE THESE!
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml

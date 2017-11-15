@@ -1,5 +1,5 @@
 import React from 'react';
-import cat from '../assets/cat.png';
+import adtoken from '../assets/adtoken.png';
 
 const styles = {
   imgStyle: {
@@ -15,7 +15,7 @@ const styles = {
 const Heading = () => {
   return (
     <div style={styles.container}>
-      <img src={cat} alt="adChain logo" style={styles.imgStyle} />
+      <img src={adtoken} alt="adToken" style={styles.imgStyle} />
       <div>{'Welcome to the Rinkeby AdToken Faucet!'}</div>
       <div>
         {'To purchase Rinkeby ADT, you can send Rinkeby ETH from your '}

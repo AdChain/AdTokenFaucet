@@ -1,17 +1,27 @@
 # AdToken Faucet
 
+> The adToken Rinkeby faucet
+
+# Development
+
 Install local packages
 
-`npm install`
+```bash
+npm install
+```
 
 Start dev server on localhost:3000
 
-`npm run dev`
+```bash
+npm run dev
+```
 
 Start prod server on localhost:3000
 
-`npm start`
+```bash
+npm start
+```
 
-Push to production (ask Mike for credentials)
+# License
 
-`eb deploy`
+MIT
