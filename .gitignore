@@ -31,3 +31,5 @@ secrets.json*
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+deploy.sh
