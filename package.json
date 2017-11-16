@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "npm run build && node server.js",
-    "dev": "react-scripts start",
+    "dev": "react-scripts start -w",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

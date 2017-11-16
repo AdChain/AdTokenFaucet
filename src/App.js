@@ -152,30 +152,20 @@ class App extends Component {
     return (
       <div className="App">
         <Heading />
-
-        <Dialog
-          message={this.state.message}
-          subMessage={this.state.subMessage}
-        />
-
-        {this.state.subMessage && (
-          <Balances 
-            adtBalance={this.state.adtBalance}
-            ethBalance={this.state.ethBalance}
-          />
-        )}
-        
-        {this.state.ethBalance === '0' && <NoEther />}
-
-        {this.state.subMessage && (
-          <PurchaseAdt 
-            handleChange={this.handleChange} 
-            handleSubmit={this.handleSubmit} 
-            amount={this.state.amount} 
-          />
-        )}
-
-        {this.state.txHash && <TxHash txHash={this.state.txHash} />}
+        <Dialog message={this.state.message} subMessage={this.state.subMessage} />
+        {
+          this.state.subMessage && (<Balances  adtBalance={this.state.adtBalance} ethBalance={this.state.ethBalance} /> )
+        }
+        {
+          this.state.ethBalance === '0' && <NoEther />
+        }
+        {
+          this.state.subMessage && 
+          ( <PurchaseAdt handleChange={this.handleChange} handleSubmit={this.handleSubmit} amount={this.state.amount} /> )
+        }
+        {
+          this.state.txHash && <TxHash txHash={this.state.txHash} />
+        }
       </div>
     );
   }
