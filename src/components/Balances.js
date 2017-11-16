@@ -1,39 +1,24 @@
 import React from 'react';
+import Address from './Address';
 
-const styles = {
-  balances: {
-    padding: '1em',
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  adt: {
-    border: '2px solid #4585c7',
-    margin: '1em',
-    marginTop: 0,
-    padding: '.3em'
-  },
-  eth: {
-    border: '2px solid #3C3C3D',
-    margin: '1em',
-    marginTop: 0,
-    padding: '.3em'
-  }
-};
+import AdTokenPrice from './AdTokenPrice';
 
-const Balances = ({ adtBalance, ethBalance }) => {
+
+const Balances = ({ adtBalance, ethBalance, loading, address  }) => {
   return (
-    <div>
-      <div style={styles.balances}>
-        <div style={styles.adt}>
-          <div>{'Your Rinkeby ADT balance:'}</div>
-          <div>{adtBalance}</div>
-        </div>
-        <div style={styles.eth}>
-          <div>{'Your Rinkeby ETH balance:'}</div>
-          <div>{ethBalance}</div>
+      <div>
+        <Address address={address} loading={loading} />       
+        <div className="balances">
+          <div className="balance-block">
+            <div>{'Your Rinkeby ADT balance:'}</div>
+            <div>{adtBalance}</div>
+          </div>
+          <div className="balance-block">
+            <div>{'Your Rinkeby ETH balance:'}</div>
+            <div>{ethBalance}</div>
+          </div>
         </div>
       </div>
-    </div>
   );
 };
 

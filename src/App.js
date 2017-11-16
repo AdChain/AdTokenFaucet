@@ -7,11 +7,13 @@ import BN from 'bn.js';
 import 'whatwg-fetch';
 
 import Heading from './components/Heading';
+import Address from './components/Address';
 import Dialog from './components/Dialog';
 import NoEther from './components/NoEther';
 import Balances from './components/Balances';
 import PurchaseAdt from './components/PurchaseAdt';
 import TxHash from './components/TxHash';
+import AdTokenPrice from './components/AdTokenPrice';
 
 class App extends Component {
   constructor() {
@@ -21,8 +23,11 @@ class App extends Component {
       ethBalance: '-',
       adtBalance: '-',
       txHash: '',
+      loading: true,
       message: 'Please unlock MetaMask and connect to the Rinkeby Test Network',
-      subMessage: ''
+      subMessage: '',
+      address : '',
+      metaMask: false
     };
   }
 
@@ -41,7 +46,8 @@ class App extends Component {
         this.setupBalances();
       } else if (this.web3.eth.defaultAccount === undefined) {
         this.setState({
-          message: 'Please unlock MetaMask and connect to the Rinkeby Test Network'
+          message: 'Please unlock MetaMask and connect to the Rinkeby Test Network',
+          loading: false
         });
       }
     }, 1000);
@@ -65,7 +71,8 @@ class App extends Component {
       await Sale.deployed();
     } catch (err) {
       this.setState({
-        message: 'Please unlock MetaMask and connect to the Rinkeby Test Network'
+        message: 'Please unlock MetaMask and connect to the Rinkeby Test Network',
+        loading: false
       });
     }
 
@@ -97,7 +104,8 @@ class App extends Component {
 
     if (!token) {
       this.setState({
-        message: 'Hmm...something went wrong. If you are running an ad blocker, please disable it to continue'
+        message: 'Hmm...something went wrong. If you are running an ad blocker, please disable it to continue',
+        loading: false
       });
       return false;
     }
@@ -116,8 +124,11 @@ class App extends Component {
       this.setState({
         message: 'Your Rinkeby MetaMask address:',
         subMessage: account,
+        address: account,
         adtBalance: adtBalance.toString(10),
-        ethBalance: ethBalance.toString(10)
+        ethBalance: ethBalance.toString(10),
+        loading: false,
+        metaMask: true
       });
     });
   };
@@ -151,21 +162,25 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Heading />
-        <Dialog message={this.state.message} subMessage={this.state.subMessage} />
-        {
-          this.state.subMessage && (<Balances  adtBalance={this.state.adtBalance} ethBalance={this.state.ethBalance} /> )
-        }
-        {
-          this.state.ethBalance === '0' && <NoEther />
-        }
-        {
-          this.state.subMessage && 
-          ( <PurchaseAdt handleChange={this.handleChange} handleSubmit={this.handleSubmit} amount={this.state.amount} /> )
-        }
-        {
-          this.state.txHash && <TxHash txHash={this.state.txHash} />
-        }
+          <Heading />
+          <Dialog message={this.state.message} metaMask={this.state.metaMask} loading={this.state.loading} subMessage={this.state.subMessage} />
+          <div className="mt-25">
+              {
+                this.state.subMessage && (<Balances loading={this.state.loading} address={this.state.address}  adtBalance={this.state.adtBalance} ethBalance={this.state.ethBalance} /> )
+              }
+              {
+                this.state.ethBalance === '0' && <NoEther />
+              }
+              {
+                <AdTokenPrice/>
+              }
+              {
+                this.state.subMessage && ( <PurchaseAdt handleChange={this.handleChange} handleSubmit={this.handleSubmit} amount={this.state.amount} /> )
+              }
+              {
+                this.state.txHash && <TxHash txHash={this.state.txHash} />
+              }
+          </div>
       </div>
     );
   }

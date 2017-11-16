@@ -1,7 +1,8 @@
 import React from 'react';
 
 const txHashStyle = {
-  padding: '1em'
+  padding: '1em',
+  color:"white"
 }
 
 const TxHash = ({ txHash }) => (

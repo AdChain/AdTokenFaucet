@@ -12,10 +12,13 @@ const styles = {
     marginTop: "3em"
   },
   infoBlock:{
-      padding:"15px ",
+      padding: "15px 2.4em",
       backgroundColor: "#10144a",
       maxWidth: "1100px",
-      display: "inline-block"
+      borderRadius: "5px"
+  },
+  color:{
+    color: "#4585c7",
   }
 };
 
@@ -27,7 +30,7 @@ const Heading = () => {
         <div>{'Welcome to the Rinkeby AdToken Faucet!'}</div>
         <div>
           {'To purchase Rinkeby ADT, you can send Rinkeby ETH from your '}
-          <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
+          <a style={styles.color} href="https://metamask.io" target="_blank" rel="noopener noreferrer">
             MetaMask
           </a>
           {' account'}

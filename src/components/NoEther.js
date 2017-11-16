@@ -1,7 +1,8 @@
 import React from 'react';
 
 const noEtherStyle = {
-  marginBottom: '2em'
+  marginBottom: '2em',
+  color:"white"
 }
 
 const NoEther = () => {

@@ -4,7 +4,8 @@ const style = {
 	dialogStyle : {
 	  color: '#F79220',
 	  fontWeight: 'bold',
-	  textAlign:"center"
+	  textAlign:"center",
+	  borderRadius: "5px"
 	},
 	infoBlock:{
       padding:"15px ",
@@ -17,13 +18,12 @@ const style = {
   }
 }
 
-const Dialog = ({ message, subMessage }) => {
+const Dialog = ({ message, loading,metaMask}) => {
   return (
-    <div style={style.dialogStyle}>
-      <div style={style.infoBlock}>
+    <div style={style.dialogStyle} className={ loading ? 'hidden'  : '' }>
+      <div style={style.infoBlock} className={ metaMask ? 'hidden'  : '' }>
       	{message}
       </div>
-      <div>{subMessage}</div>
     </div>
   );
 };
