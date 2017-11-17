@@ -1,6 +1,6 @@
 import React from 'react';
 import Address from './Address';
-
+import commafy from 'commafy';
 
 const Balances = ({ adtBalance, ethBalance, loading, address  }) => {
   return (
@@ -9,11 +9,11 @@ const Balances = ({ adtBalance, ethBalance, loading, address  }) => {
         <div className="balances">
           <div className="balance-block">
             <div>{'Your Rinkeby ADT balance:'}</div>
-            <div>{adtBalance}</div>
+            <div>{commafy(adtBalance)}</div>
           </div>
           <div className="balance-block">
             <div>{'Your Rinkeby ETH balance:'}</div>
-            <div>{ethBalance}</div>
+            <div>{commafy(ethBalance)}</div>
           </div>
         </div>
       </div>

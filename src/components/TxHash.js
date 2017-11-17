@@ -1,18 +1,22 @@
 import React from 'react';
 
-const txHashStyle = {
-  padding: '1em',
-  color:"white"
+const styles = {
+  txHashStyle: {
+      padding: '1em',
+      color:"white",
+      fontFamily: "'Titillium Web', sans-serif"
+  },
+  link: {
+    fontFamily: "'Titillium Web', sans-serif",
+    color: "rgb(69, 133, 199)"
+  }
+
 }
 
 const TxHash = ({ txHash }) => (
-  <div style={txHashStyle}>
+  <div style={styles.txHashStyle}>
     <div>Your transaction:</div>
-    <a
-      rel="noopener noreferrer"
-      target="_blank"
-      href={`https://rinkeby.etherscan.io/tx/${txHash}`}
-    >
+    <a style={styles.link} rel="noopener noreferrer" target="_blank" href={`https://rinkeby.etherscan.io/tx/${txHash}`}>
       {txHash}
     </a>
   </div>

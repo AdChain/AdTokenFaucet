@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "commafy": "0.0.5",
     "ethjs-unit": "0.1.6",
     "express": "4.15.4",
     "path": "0.12.7",

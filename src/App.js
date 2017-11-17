@@ -171,7 +171,7 @@ class App extends Component {
                 this.state.ethBalance === '0' && <NoEther />
               }
               {
-                <AdTokenPrice/>
+                <AdTokenPrice loading={this.state.loading}/>
               }
               {
                 this.state.subMessage && ( <PurchaseAdt handleChange={this.handleChange} handleSubmit={this.handleSubmit} amount={this.state.amount} /> )

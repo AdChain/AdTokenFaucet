@@ -11,11 +11,11 @@ const style = {
   }
 }
 
-const AdTokenPrice = () => {
+const AdTokenPrice = ({loading}) => {
   return (
-    <div style={style.priceBox}>
+    <div style={style.priceBox} className={ loading ? 'hidden'  : '' }>
       <div style={style.text}>
-        {'1 ETH is about 17,500 ADT'}
+        {'1 Rinkeby ETH is about 17,500 Rinkeby ADT'}
       </div>
     </div>
   );

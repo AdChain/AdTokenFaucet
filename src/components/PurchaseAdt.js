@@ -7,7 +7,8 @@ const styles = {
     color: "white",
     background: "rgb(69, 133, 199)",
     fontSize: "1em",
-    padding: "10px"
+    padding: "10px",
+    fontFamily: "'Titillium Web', sans-serif"
   },
   text: {
     color: "#4585c7",
