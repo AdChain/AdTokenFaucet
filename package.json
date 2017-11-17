@@ -19,8 +19,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "standard",
-    "lint:fix": "standard --fix"
+    "lint": "standard src/**/*.js",
+    "lint:fix": "standard --fix src/**/*.js"
   },
   "devDependencies": {
     "eslint": "^4.5.0",
