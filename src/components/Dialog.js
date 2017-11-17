@@ -8,7 +8,6 @@ const style = {
 	  borderRadius: "5px"
 	},
 	infoBlock:{
-      padding:"15px ",
       backgroundColor: "#1190ff",
       fontSize: "1em",
       padding: "1em 7em",
