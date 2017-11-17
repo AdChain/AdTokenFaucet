@@ -7,7 +7,6 @@ import BN from 'bn.js';
 import 'whatwg-fetch';
 
 import Heading from './components/Heading';
-import Address from './components/Address';
 import Dialog from './components/Dialog';
 import NoEther from './components/NoEther';
 import Balances from './components/Balances';

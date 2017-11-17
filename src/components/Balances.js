@@ -1,8 +1,6 @@
 import React from 'react';
 import Address from './Address';
 
-import AdTokenPrice from './AdTokenPrice';
-
 
 const Balances = ({ adtBalance, ethBalance, loading, address  }) => {
   return (

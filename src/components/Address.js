@@ -2,7 +2,6 @@ import React from 'react';
 
 const style = {
   marginBottom: '2em',
-  color:"white",
   display:"inline-block",
   padding:"40px 30px 40px 30px",
   backgroundColor: "rgb(16, 20, 74)",
