@@ -1,4 +1,5 @@
 import React from 'react'
+import AdtCalculator from './AdtCalculator'
 
 const style = {
   priceBox: {
@@ -15,7 +16,7 @@ const AdTokenPrice = ({loading}) => {
   return (
     <div style={style.priceBox} className={loading ? 'hidden' : ''}>
       <div style={style.text}>
-        {'1 Rinkeby ETH is about 17,500 Rinkeby ADT'}
+        <AdtCalculator />
       </div>
     </div>
   )
