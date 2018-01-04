@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import commafy from 'commafy'
 
-
 function formatValue (value) {
   return commafy(+(value).toFixed())
 }
@@ -42,7 +41,6 @@ class AdtCalculator extends Component {
       </div>
     )
   }
-
 
   async getPrices () {
     const {ethUsd, adtUsd} = await this.priceStats()
